@@ -8,44 +8,48 @@
 <body>
 
 
-  <div class="keys">
-    <div data-key="65" class="key">
-      <kbd>A</kbd>
-      <span class="sound">clap</span>
+  <div id="surround">
+    <div class="keys">
+      <div data-key="65" class="key">
+        <kbd>A</kbd>
+        <span class="sound">clap</span>
+      </div>
+      <div data-key="83" class="key">
+        <kbd>S</kbd>
+        <span class="sound">hihat</span>
+      </div>
+      <div data-key="68" class="key">
+        <kbd>D</kbd>
+        <span class="sound">kick</span>
+      </div>
+      <div data-key="70" class="key">
+        <kbd>F</kbd>
+        <span class="sound">openhat</span>
+      </div>
+      <div data-key="71" class="key">
+        <kbd>G</kbd>
+        <span class="sound">boom</span>
+      </div>
+      <div data-key="72" class="key">
+        <kbd>H</kbd>
+        <span class="sound">ride</span>
+      </div>
+      <div data-key="74" class="key">
+        <kbd>J</kbd>
+        <span class="sound">snare</span>
+      </div>
+      <div data-key="75" class="key">
+        <kbd>K</kbd>
+        <span class="sound">tom</span>
+      </div>
+      <div data-key="76" class="key">
+        <kbd>L</kbd>
+        <span class="sound">tink</span>
+      </div>
     </div>
-    <div data-key="83" class="key">
-      <kbd>S</kbd>
-      <span class="sound">hihat</span>
-    </div>
-    <div data-key="68" class="key">
-      <kbd>D</kbd>
-      <span class="sound">kick</span>
-    </div>
-    <div data-key="70" class="key">
-      <kbd>F</kbd>
-      <span class="sound">openhat</span>
-    </div>
-    <div data-key="71" class="key">
-      <kbd>G</kbd>
-      <span class="sound">boom</span>
-    </div>
-    <div data-key="72" class="key">
-      <kbd>H</kbd>
-      <span class="sound">ride</span>
-    </div>
-    <div data-key="74" class="key">
-      <kbd>J</kbd>
-      <span class="sound">snare</span>
-    </div>
-    <div data-key="75" class="key">
-      <kbd>K</kbd>
-      <span class="sound">tom</span>
-    </div>
-    <div data-key="76" class="key">
-      <kbd>L</kbd>
-      <span class="sound">tink</span>
-    </div>
+    <input type="button" id="my-button" value="Random Beat">
   </div>
+
 
   <audio data-key="65" src="sounds/clap.wav"></audio>
   <audio data-key="83" src="sounds/hihat.wav"></audio>
@@ -58,6 +62,54 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
+  const keys = document.querySelectorAll(".key");
+  const btn = document.getElementById('my-button');
+
+  const fakeKey = (key) => {
+    const evt = new KeyboardEvent('keydown', {'keyCode': key});
+    window.dispatchEvent(evt);
+  }
+
+  const launchMusic = () => {
+    const keys = [65, 83, 68, 70, 71, 72, 74, 75, 76];
+    const randomKey = Math.floor(Math.random() * 9);
+    fakeKey(keys[randomKey]);
+
+  }
+
+  const backToNormal = (e) => {
+    if(e.propertyName === 'transform'){
+      e.target.classList.remove('playing');
+    }
+  }
+
+  const playSound = (e) => {
+    console.log(e.keyCode);
+    const key = document.querySelector(`div[data-key='${e.keyCode}']`);
+    const audio = document.querySelector(`audio[data-key='${e.keyCode}']`);
+    if(!key) return;
+    key.classList.add('playing');
+    audio.currentTime = 0;
+    audio.play();
+  }
+
+  window.addEventListener('keydown', playSound);
+  keys.forEach(key => {
+    key.addEventListener('transitionend', backToNormal);
+  })
+  btn.addEventListener('click', (event) => {
+    const myInterval = setInterval(launchMusic, 300);
+  });
+
+  // Event listener sur la fenetre
+  // on keydown j´appelle play sound
+  // play sound recherche les éléments qui prennent un dataset corresp
+  // si l´élément existe alors
+  // met le temps de l´audio au début ajoute la classe et joue le son
+  // sinon return
+  // eventListener transitionend pour rétablir à la normale
+
+
 
 </script>
 
